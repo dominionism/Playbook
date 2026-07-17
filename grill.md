@@ -26,8 +26,8 @@ Your project uses this layout:
 │   ├── Research/
 │   │   └── Research.md
 │   ├── ADR/
-│   ├── Plans/
-│   │   └── <Feature-Name>.md
+│   └── Plans/
+│       └── <Feature-Name>.md
 └── src/
 ```
 

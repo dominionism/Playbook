@@ -110,6 +110,7 @@ Structure:
 After each work item, note whether it was: specified from knowledge, inferred from codebase exploration, or researched (cite the finding).
 
 **This file is the single source of truth for the plan.** Other commands will read and update it. Keep it current.
+
 ---
 
 ## 7. Validate

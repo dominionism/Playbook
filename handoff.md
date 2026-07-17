@@ -102,7 +102,6 @@ context_depth: <shallow | deep>
 - No confidence tags, no provenance tags, no quality gate. The recall agent handles those.
 - Do not duplicate content already captured in other artifacts (PRDs, ADRs, issues, existing handoffs). Reference them by path or URL instead.
 - Redact any sensitive information: API keys, passwords, or PII.
-```
 
 Resume with `/recall`.
 

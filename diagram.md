@@ -115,7 +115,7 @@ Place these inside the Mermaid frontmatter block (the `---` delimited section at
 ### Inline mode (default)
 Generate a ` ```mermaid ` fenced code block with the diagram definition. Precede it with a plain-text description (1-2 sentences) that explains what the diagram shows. This is the format for PR descriptions and markdown docs — GitHub renders the block natively.
 
-```
+````
 The request flows through three layers before reaching storage:
 
 ```mermaid
@@ -129,6 +129,7 @@ flowchart TD
     B --> C[Handler]
     C --> D[(Store)]
 ```
+````
 
 ### File mode (`--render local`)
 The agent:

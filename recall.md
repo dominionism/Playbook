@@ -35,6 +35,7 @@ If a plan file exists, read it **before** the handoff. The plan is the single so
 **Locate accumulated codebase knowledge, if any:**
 ```bash
 ls <project-root>/Context/Research/*.md 2>/dev/null
+```
 
 If files exist in `Context/Research/`, read them all **before** the handoff. Start with `Research/Research.md` — the comprehensive overview. Then read any topic files (e.g. `Research/Auth-Middleware-Chain.md`) — these are subsystem deep-dives added by `/research` or `/promote`. Together they are the stable, high-signal accumulated codebase knowledge. Trust them; they were written at high context fidelity.
 
@@ -43,6 +44,7 @@ If files exist in `Context/Research/`, read them all **before** the handoff. Sta
 ls <project-root>/Context/Glossary.md <project-root>/Context/ADR/*.md 2>/dev/null
 ```
 If `Context/Glossary.md` exists, absorb it — canonical terms `/grill` sharpened, with synonyms to avoid. If `Context/ADR/` contains ADRs, read every one — settled architectural decisions that constrain every next action and must not be re-litigated.
+
 ---
 
 ## Step 1 — Absorb durable context, then the handoff
