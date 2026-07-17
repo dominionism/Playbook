@@ -17,7 +17,13 @@ CLAUDE_DIR="$HOME/.claude/commands"
 if [ -d "$CLAUDE_DIR" ]; then
   for f in "$SRC"/*.md; do
     name="$(basename "$f")"
-    [ -e "$CLAUDE_DIR/$name" ] || ln -s "$f" "$CLAUDE_DIR/$name"
+    target="$CLAUDE_DIR/$name"
+    if [ -L "$target" ]; then
+      # repoint wrong or broken links; leave correct ones alone
+      [ "$(readlink "$target")" = "$f" ] || ln -sfn "$f" "$target"
+    elif [ ! -e "$target" ]; then
+      ln -s "$f" "$target"
+    fi  # a regular file is never clobbered
   done
   broken=$(find -L "$CLAUDE_DIR" -type l | wc -l | tr -d ' ')
   echo "claude   : $(ls "$CLAUDE_DIR"/*.md 2>/dev/null | wc -l | tr -d ' ') linked, $broken broken"
