@@ -143,6 +143,7 @@ Before acting, determine which command the next action calls for:
 - Promoting implementation learnings to durable context → `/promote`
 - Committing staged work → `/commit`
 - Opening or updating a pull request → `/pr`
+- Reviewing a pull request → `/assess`
 
 State which command fits and invoke it.
 

@@ -161,14 +161,9 @@ When `/diagram` is called from `/pr`, the scope is the PR's diff range. The agen
    - Focus on the changed parts, not the entire system.
 4. The `/pr` command embeds these inline in the PR description.
 
-### What /pr does with diagrams
+### What /pr, /visuals, and /assess do with diagrams
 
-The `/pr` command's Visuals section (in `~/.commands/pr.md`) instructs the agent to:
-
-- Generate Mermaid ` ```mermaid ` fenced blocks (not ASCII art).
-- Use `/diagram` protocol for the generation logic.
-- Keep diagrams focused on the change, not the whole system.
-- Add plain-text descriptions above each diagram.
+The visual supplements in PRs and reviews are orchestrated by the /visuals engine (`~/.commands/visuals.md`): it decides **what to show** — the Story (the changed flow end to end, with a plain-language walkthrough), the Delta (a compact before/after), and in review mode the Focus (`⚠` marks) — and defers to this protocol for **how to draw**: types, syntax, size caps, accessibility. `/pr` runs the engine in authoring mode on every PR above the trivial floor; `/assess` runs it in review mode. All three keep diagrams focused on the change, capped, and preceded by plain-text descriptions.
 
 ## 8. Rules
 

@@ -1,8 +1,8 @@
 ---
-description: Open or update a pull request with a polished, reviewer-facing summary at the ceiling of clarity. Synthesizes the commit series (not a restatement), renders structure as Mermaid.js diagrams when a picture is faster than prose, maps into the repo's PR template if one exists, and pushes via gh. No tool attribution.
+description: Open or update a pull request with a polished, reviewer-facing summary at the ceiling of clarity. Synthesizes the commit series (not a restatement), ships the /visuals supplement on every PR above the trivial floor — the Story of the changed flow and the Delta of what moved — maps into the repo's PR template if one exists, and pushes via gh. No tool attribution.
 ---
 
-Produce the pull request summary a senior engineer would be proud to hand a reviewer: one document that makes the whole commit series legible at a glance, renders the shape of the change as Mermaid.js diagrams when structure demands it (GitHub renders ` ```mermaid ` blocks natively), and tells the reviewer exactly how to verify and what to worry about. Then open or update the PR.
+Produce the pull request summary a senior engineer would be proud to hand a reviewer: one document that makes the whole commit series legible at a glance, carries the visual supplement on every PR above the trivial floor — the Story of how the changed system works and the Delta of what moved, per the /visuals engine (`~/.commands/visuals.md`) — and tells the reviewer exactly how to verify and what to worry about. Then open or update the PR.
 
 A PR summary is a *synthesis*, not a restatement. The commit history already says what each atomic unit did; the reviewer reads the PR to see the whole arc, why it matters, and where the risk is. If your body is just the commit subjects with blank lines between them, you haven't written a PR summary — you've reformatted `git log`.
 
@@ -98,8 +98,11 @@ Use this structure. Omit any section that has no content; never write "N/A".
 ## Summary
 <one to three sentences: what this PR does and why. The reviewer's first read.>
 
+## How it works
+<the Story from /visuals authoring mode: the changed flow end to end, drawn as the system works with this PR applied, changed nodes marked ✱, followed by its numbered plain-language walkthrough. Omitted only when the visuals floor says skip.>
+
 ## What changed
-<the arc, in prose. Group the commits into 1–4 paragraphs by concern, not one per commit. Name files and symbols only where they anchor the reader.>
+<the arc, in prose. Group the commits into 1–4 paragraphs by concern, not one per commit. Name files and symbols only where they anchor the reader. Close with the Delta from /visuals — the compact before/after of the neighborhood that moved.>
 
 ## Why
 <the motivation — the requirement, bug report, or decision this satisfies. If it's non-obvious, say why this approach over the alternative. If `/blueprint` or `/grill` captured the rationale, cite it briefly rather than restating.>
@@ -110,49 +113,23 @@ Use this structure. Omit any section that has no content; never write "N/A".
 ## Risk & breaking changes
 <the one or two places to look hardest. Any BREAKING CHANGE: consumer impact + migration path. If none, say "No breaking changes" and name the highest residual risk anyway.>
 
-<!-- visuals go inline where they clarify, between sections — see §5 -->
+<!-- the Story and the Delta have fixed places above; any further diagram must earn its own — see Visuals below -->
 ```
 
-### Visuals — Mermaid.js diagrams (owned by /pr)
+### Visuals — the supplement every PR carries (via /visuals)
 
-Structural visuals live here — `/commit` defers them, `/pr` produces them. Add a Mermaid diagram **only when a reviewer parses a picture faster than prose**, inline at the point it clarifies. GitHub renders ` ```mermaid ` fenced blocks natively in PR descriptions — no CLI tool needed for the basic path.
+Structural visuals live here — `/commit` defers them, `/pr` ships them. Follow the /visuals engine (`~/.commands/visuals.md`) in **authoring mode** on every PR. It produces two pieces and fixes where they land:
 
-Generate each diagram as a ` ```mermaid ` fenced block. Follow the `/diagram` protocol (`~/.commands/diagram.md`) for generation rules, sizing limits, accessibility, and conventions. The rules below are the PR-specific subset.
+- **The Story** → fills `## How it works`: the changed flow end to end, drawn as the system works with this PR applied, changed nodes marked `✱`, followed by a numbered plain-language walkthrough a newcomer can follow without opening a file.
+- **The Delta** → closes `## What changed`: a compact before/after of just the neighborhood that moved, with a one-or-two-sentence caption.
 
-### When to diagram
+Scaling is the engine's job — small diff, small visuals. The only skip is the floor in visuals.md §2: a diff with zero architectural surface (docs-only, formatting, lockfile churn). State the skip reason in conversation and omit the sections from the body; never write a placeholder.
 
-Use a Mermaid diagram for:
+Rendering rules — diagram types, the 30-node/50-edge caps, `accTitle`/`accDescr` accessibility, syntax conventions — come from the `/diagram` protocol (`~/.commands/diagram.md`), as always. At most 3 diagrams per PR. GitHub renders ` ```mermaid ` fenced blocks natively — no CLI tool needed.
 
-- **Architecture / module moves** — flowchart showing the before/after structure:
+**Preview before pushing.** If `mmdc` is available, consider rendering locally first to verify the diagrams render and nothing is clipped.
 
-  ```mermaid
-  flowchart LR
-      subgraph before[Before]
-        Router --> Service --> Store[(File)]
-      end
-      subgraph after[After]
-        Router --> Service --> Repository --> Store[(PostgreSQL)]
-      end
-  ```
-
-- **State-machine or data-flow changes** — flowchart with highlighted changed edges.
-- **Type/interface hierarchies** — classDiagram for inheritance or composition changes.
-- **Branching or release strategy** — gitGraph for multi-branch PRs or release branches.
-- **API or middleware request flows** — sequenceDiagram for multi-step request paths.
-- **Schema migrations** — classDiagram with before/after field annotations.
-- **Multi-file refactors where the import graph shifted** — flowchart showing what now imports what.
-
-Never a diagram for a single-file tweak, a format change, or a docs edit. If you can't make it both accurate and compact, skip it — a misleading diagram is worse than none.
-
-### Diagram conventions (PR-specific)
-
-- **One to three diagrams max per PR.** Beyond three, the reviewer stops reading them.
-- **Focus on what changed.** A before/after pair is ideal — it shows the delta, not the static system.
-- **Each diagram must have:** a plain-text description above it, and `accTitle` + `accDescr` inside the Mermaid frontmatter for accessibility.
-- **Keep it compact.** Maximum 30 nodes, 50 edges. If the change exceeds these limits, summarize in text and offer a `/diagram` deep-dive if the reviewer wants detail.
-- **Preview before pushing.** If `mmdc` is available, consider rendering locally first: `echo '```mermaid\n...' | mmdc -i - -o preview.svg` to verify the diagram renders correctly and nothing is clipped.
-
-For complex or multi-diagram needs, invoke `/diagram` directly: the agent follows the full protocol including auto-detecting scope from the diff range.
+For a structure too large or interesting for the Story's lens, generate a dedicated `/diagram` deep-dive and link it from the PR instead of inlining wallpaper.
 
 ### Issue references & footers
 
@@ -220,7 +197,8 @@ Rules:
 ## Anti-patterns
 
 - **Restating the commit log.** Listing each commit's subject as a bullet. The sidebar already shows commits; the body must synthesize the arc.
-- **Decoration as diagram.** A Mermaid diagram for a one-file tweak, or a diagram that misrepresents the code. A misleading picture is worse than none.
+- **Decoration as diagram.** Visuals for a diff below the /visuals floor (docs-only, formatting), or a diagram that misrepresents the code. A misleading picture is worse than none.
+- **Skipping the supplement.** Shipping a PR above the floor without the Story and the Delta. Clarity is the contract; the floor is the only exemption.
 - **Diagram without alt-text.** Mermaid block missing `accTitle`/`accDescr` — the diagram is invisible to screen readers and confusing on mobile.
 - **Oversized diagram that silently fails.** A diagram exceeding GitHub's ~50KB or ~500-edge limit renders as raw code. Always enforce the 30-node/50-edge cap.
 - **Fake confidence.** Inventing an issue number to look thorough, or claiming BREAKING CHANGE for internal-only reshuffles.
@@ -236,7 +214,8 @@ Rules:
 
 `/pr` can be invoked at any point after you have commits on a branch — before pushing (it'll push for you), after an existing PR is open (update the body), or mid-grill when the design crystallized into committed code. If there are no commits between `<base>` and `HEAD`, say so and stop — don't open a PR from noise.
 **After this command:**
-- If the PR's structural change is complex enough to need a dedicated visual → `/diagram` to generate Mermaid.js diagrams for the PR body. The `/diagram` protocol auto-detects scope from the diff range.
+- The Story's lens couldn't fit an interesting structure → `/diagram` for a dedicated deep-dive linked from the PR body. The `/diagram` protocol auto-detects scope from the diff range.
+- To review a PR at the same bar — a peer's, or this one before merge → `/assess` for the full-clarity review (Story with Focus marks, findings, verdict).
 - If the PR exposes a question a reviewer will inevitably ask that's better answered with code → `/prototype` the uncertain part, then update the PR.
 - If the PR advances an architectural decision → `/grill` to capture an ADR that the PR's "Why" section can link.
 - If you need to step away mid-review-cycle → `/handoff` to checkpoint; `/recall` to resume.
