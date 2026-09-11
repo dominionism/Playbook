@@ -33,4 +33,4 @@ jobs:
         run: |
           expected=$(find skills -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')
           npx --yes skills add . --list | tee "$RUNNER_TEMP/skills-list.txt"
-          grep -q "Found ${expected} skills" "$RUNNER_TEMP/skills-list.txt"
+          sed 's/\x1b\[[0-9;?]*[A-Za-z]//g' "$RUNNER_TEMP/skills-list.txt" | grep -q "Found ${expected} skills"
