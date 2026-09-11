@@ -4,14 +4,15 @@ Personal engineering commands for planning, building, reviewing, and shipping so
 
 [![Validate](https://github.com/dominionism/Playbook/actions/workflows/validate.yml/badge.svg)](https://github.com/dominionism/Playbook/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![skills.sh](https://skills.sh/b/dominionism/Playbook)](https://skills.sh/dominionism/Playbook)
 
-Playbook is an opinionated collection of reusable engineering workflows. Each command is packaged as an [Agent Skill](https://agentskills.io): one canonical `SKILL.md` that works unchanged in Claude Code, Codex, OpenCode, Pi, OMP, and any other agent that implements the standard. There are no per-agent prompt files, loaders, or installers to keep in sync.
+Playbook is an opinionated collection of reusable engineering workflows. Each command is packaged as an [Agent Skill](https://agentskills.io): one self-contained `SKILL.md` that works unchanged in Claude Code, Codex, OpenCode, Pi, OMP, and any other agent that implements the standard. Every command lives under [`skills/`](skills), readable in the browser and small enough to copy into your own setup. There are no per-agent prompt files, loaders, or installers to keep in sync, and no package to install: this repository is the distribution.
 
 ## Install
 
 Skills are instructions that run with your agent's permissions. Read them before installing.
 
-Installation uses the [`skills`](https://github.com/vercel-labs/skills) CLI, which needs Node.js 18 or newer:
+The [`skills`](https://github.com/vercel-labs/skills) CLI installs straight from this repository and needs Node.js 18 or newer:
 
 ```bash
 npx skills add dominionism/Playbook --global
@@ -47,6 +48,18 @@ npx skills update --global
 npx skills remove --global
 ```
 
+### Copy a single command
+
+Every command is one directory, so copying it by hand works just as well. Put it wherever your agent reads skills:
+
+```bash
+git clone https://github.com/dominionism/Playbook.git
+cp -r Playbook/skills/commit ~/.claude/skills/   # Claude Code
+cp -r Playbook/skills/commit ~/.agents/skills/   # Codex, OpenCode, OMP, Pi
+```
+
+Copy the whole directory rather than `SKILL.md` alone: `locate` and `consolidate` keep their full protocol in a `references/` folder next to it.
+
 ## Invoke
 
 The skill format is portable; the invocation syntax belongs to each host.
@@ -63,36 +76,38 @@ Every description states when the command applies, so agents that select skills 
 
 ## Commands
 
+Each name links to the command itself.
+
 ### Understand and plan
 
 | Command | Purpose |
 | --- | --- |
-| `init` | Create Playbook's non-destructive `Context/` and `Memories/` project structure |
-| `research` | Map a codebase or feature deeply enough to work in it confidently |
-| `blueprint` | Produce a concrete implementation plan grounded in repository context |
-| `grill` | Challenge a plan one decision at a time and sharpen project language |
-| `prototype` | Build disposable code to answer a high-fidelity engineering question |
+| [`init`](skills/init/SKILL.md) | Create Playbook's non-destructive `Context/` and `Memories/` project structure |
+| [`research`](skills/research/SKILL.md) | Map a codebase or feature deeply enough to work in it confidently |
+| [`blueprint`](skills/blueprint/SKILL.md) | Produce a concrete implementation plan grounded in repository context |
+| [`grill`](skills/grill/SKILL.md) | Challenge a plan one decision at a time and sharpen project language |
+| [`prototype`](skills/prototype/SKILL.md) | Build disposable code to answer a high-fidelity engineering question |
 
 ### Preserve context
 
 | Command | Purpose |
 | --- | --- |
-| `handoff` | Capture the current session's signal and exact next action |
-| `recall` | Reconstruct durable context, verify state, and resume work |
-| `promote` | Reconcile implementation learnings into plans, research, glossary, and ADRs |
-| `record` | Save a concept in a configurable personal engineering knowledge library |
-| `locate` | Find and absorb a context tree through the optional Grove CLI |
-| `consolidate` | Distill a session into Grove with diff review and explicit acceptance |
+| [`handoff`](skills/handoff/SKILL.md) | Capture the current session's signal and exact next action |
+| [`recall`](skills/recall/SKILL.md) | Reconstruct durable context, verify state, and resume work |
+| [`promote`](skills/promote/SKILL.md) | Reconcile implementation learnings into plans, research, glossary, and ADRs |
+| [`record`](skills/record/SKILL.md) | Save a concept in a configurable personal engineering knowledge library |
+| [`locate`](skills/locate/SKILL.md) | Find and absorb a context tree through the optional Grove CLI |
+| [`consolidate`](skills/consolidate/SKILL.md) | Distill a session into Grove with diff review and explicit acceptance |
 
 ### Ship and review
 
 | Command | Purpose |
 | --- | --- |
-| `commit` | Create atomic Conventional Commits from the actual diff |
-| `pr` | Open or update a GitHub PR with a synthesized reviewer-facing narrative |
-| `assess` | Review a GitHub PR against its actual code and produce a gated verdict |
-| `visuals` | Produce Story, Delta, and review Focus visuals for a change |
-| `diagram` | Generate accurate, accessible Mermaid diagrams from codebase analysis |
+| [`commit`](skills/commit/SKILL.md) | Create atomic Conventional Commits from the actual diff |
+| [`pr`](skills/pr/SKILL.md) | Open or update a GitHub PR with a synthesized reviewer-facing narrative |
+| [`assess`](skills/assess/SKILL.md) | Review a GitHub PR against its actual code and produce a gated verdict |
+| [`visuals`](skills/visuals/SKILL.md) | Produce Story, Delta, and review Focus visuals for a change |
+| [`diagram`](skills/diagram/SKILL.md) | Generate accurate, accessible Mermaid diagrams from codebase analysis |
 
 ## Workflow
 
@@ -165,27 +180,24 @@ It never creates an unconfigured library silently. Export `PLAYBOOK_LIBRARY_DIR`
 
 `locate` and `consolidate` bundle their complete protocols but depend on the separate `grove` CLI and a Grove root (`GROVE_ROOT`, defaulting to `~/Grove`). Both check for Grove before doing anything else and stop with a clear message when it is missing. Grove is not yet public; the other fourteen commands do not use it.
 
-## Develop Playbook
+## Make it yours
 
-Clone, install from the checkout, then link the checkout so that edits are live in every agent:
+Playbook is meant to be adapted, not followed to the letter. Start from a copy that is entirely yours:
+
+- **[Use this template](https://github.com/dominionism/Playbook/generate)** creates a new repository with these files and none of this history.
+- **Fork** if you want to pull future changes from here.
+
+Then edit any `skills/<name>/SKILL.md`, validate, and install from your checkout:
 
 ```bash
-git clone https://github.com/dominionism/Playbook.git
-cd Playbook
+npm test
 npx skills add . --global --yes
 sh scripts/link.sh
 ```
 
 `npx skills add .` copies each skill into `~/.agents/skills` and wires the agents. `scripts/link.sh` then replaces those copies with symlinks to `skills/<name>` in the checkout, so a saved edit is what every agent reads next. Re-run `npx skills add . --global --yes` to return to copies.
 
-Validate before committing:
-
-```bash
-npm test
-for skill in skills/*/; do uvx --from skills-ref agentskills validate "$skill"; done
-```
-
-`npm test` checks the frontmatter, the skill layout, bundled references, and that the command tables above match `skills/`. The second command runs the reference validator from agentskills.io. CI runs both on every push and pull request, and also confirms that the installer discovers every skill.
+`npm test` checks the frontmatter, the skill layout, bundled references, that the command tables above match `skills/`, and that no file carries a secret or a machine-specific path. For the reference validator from agentskills.io, run `uvx --from skills-ref agentskills validate skills/<name>`. CI runs both on every push and pull request, and also confirms that the installer discovers every skill.
 
 ### Structure
 
