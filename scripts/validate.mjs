@@ -160,8 +160,12 @@ function validateReadme(skillNames) {
     return;
   }
   const readme = readFileSync(readmePath, "utf8");
+  // A table row names a command either as plain code or as a link to its
+  // own SKILL.md; the backreference rejects a link that points elsewhere.
   const documented = new Set();
-  for (const match of readme.matchAll(/^\| `([a-z0-9-]+)` \|/gm)) documented.add(match[1]);
+  for (const match of readme.matchAll(/^\| (?:`([a-z0-9-]+)`|\[`([a-z0-9-]+)`\]\(skills\/\2\/SKILL\.md\)) \|/gm)) {
+    documented.add(match[1] ?? match[2]);
+  }
   for (const name of skillNames) {
     if (!documented.has(name)) error("README.md", `skill \`${name}\` is not listed in the command tables`);
   }
