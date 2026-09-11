@@ -128,6 +128,8 @@ ADRs live in `Context/ADR/` with sequential numbering: `0001-Slug.md`, `0002-Slu
 - If a prototype produced learnings that change the plan → update `Context/Plans/<Feature-Name>.md` with the finding before continuing the grilling session
 - If context is running low mid-grill → `/handoff` to checkpoint. Resume with `/recall`.
 
+**What `/grill` changes in the plan, and what it does not.** `/grill` edits the plan in place: the "Out of Scope" section, the What, Why, or Risk of any work item a decision touches, glossary-aligned wording, and ADR cross-references. It does not add, remove, or reorder work items, re-check dependency order, or research new unknowns — those are `/blueprint`'s steps. When a decision calls for any of them, finish the grilling session and re-run `/blueprint`; it reads the existing plan and preserves everything `/grill` added.
+
 **After this command:**
 - Re-run `/blueprint` if grilling materially changed the plan's scope, terminology, or risk surface — the plan file should reflect the sharpened design before implementation begins.
 - If you want to preserve the session → `/handoff`
