@@ -20,6 +20,7 @@ git rev-parse --show-toplevel
 git branch --show-current
 git rev-parse HEAD
 git status --short
+ls Context/Plans/*.md 2>/dev/null
 ```
 
 ---
@@ -54,6 +55,7 @@ date: <ISO timestamp>
 branch: <branch name>
 commit: <commit sha>
 context_depth: <shallow | deep>
+plan: <Context/Plans/<Feature-Name>.md this session worked against — omit if none>
 ---
 
 # Task
@@ -75,6 +77,9 @@ context_depth: <shallow | deep>
 - Errors encountered + fix
 - User approvals, vetoes, pivots>
 
+# Decisions not yet in the plan
+- <a decision made this session that the plan file does not reflect yet — one line, naming the work item it affects>
+
 # Open questions
 - <pending decisions awaiting the user>
 - <things we know we don't know>
@@ -93,11 +98,12 @@ context_depth: <shallow | deep>
 - <reason: why this skill fits the next action>
 
 # Pointers
-- <plan file — `Context/Plans/<Feature-Name>.md` if one exists>
+- <other artifacts the next agent should open: ADRs, issues, research notes>
 ```
 
 **Rules:**
 - Every section is optional except Task and Next action. If you can't recall anything for a section, omit it — never write "N/A."
+- `Decisions not yet in the plan` is recall, not analysis: list what was decided and not yet written into the plan, nothing more. If the plan already reflects every decision, omit the section. `/recall` surfaces it; `/promote` writes it.
 - Do not analyze, evaluate, or tag your claims. Just write them down.
 - Do not redact or summarize further than one line per item. Err on the side of including.
 - No code blocks unless essential. Prefer `path:line` references.

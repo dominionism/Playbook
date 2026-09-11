@@ -34,6 +34,8 @@ ls <project-root>/Context/Plans/*.md 2>/dev/null
 ```
 If a plan file exists, read it **before** the handoff. The plan is the single source of truth — it was kept current by `/grill`. The handoff's task and constraints may be stale if the plan was updated later.
 
+If several plans exist, read the handoff's frontmatter now (only the frontmatter — the body waits for Step 1B): its `plan:` line names the active plan. Without that line, pick the plan matching the current branch or task and say which one you chose.
+
 **Locate accumulated codebase knowledge, if any:**
 ```bash
 ls <project-root>/Context/Research/*.md 2>/dev/null
@@ -63,8 +65,9 @@ Extract only what the durable context doesn't already contain:
 - **Open questions** — unresolved decisions awaiting the user.
 - **Files changed** — files touched since the last durable-context update. Cross-reference against the plan's work items.
 - **Recent surprises** — anything the plan didn't anticipate.
+- **Decisions not yet in the plan** — decisions the prior session made that the plan does not reflect. On exactly those points the handoff is newer than the plan and overrides it; everywhere else the plan stands. Carry them into the orientation block and route them to `/promote` before implementation continues.
 
-Do not re-extract task, constraints, or north star from the handoff if the plan file already states them. The plan is more current — `/grill` updated it after the handoff was written. If they conflict, trust the plan.
+Do not re-extract task, constraints, or north star from the handoff if the plan file already states them. The plan is more current — `/grill` updated it after the handoff was written. If they conflict, trust the plan, except on the points listed under `Decisions not yet in the plan`.
 
 ### 1C — If `--deep` was passed
 
@@ -79,6 +82,7 @@ Write a tight reconstruction in scratch reasoning:
 4. **Dead ends** (from handoff — things not to retry)
 5. **Open questions** (from handoff — things still awaiting user)
 6. **Next action** (from handoff)
+7. **Decisions not yet in the plan** (from handoff — the plan is stale on exactly these points)
 
 Do not build a timeline. Do not deduplicate across handoffs. Do not flag conflicts between handoffs. The durable context is the reconciled state.
 
@@ -125,6 +129,7 @@ Research: <Context/Research/ exists — N files | not found — /research recomm
 Progress: <what's done / in progress / not started>
 Next action: <concrete, from handoff>
 Top risk: <one line>
+Unpromoted: <decisions from the handoff the plan does not reflect | none>
 
 State checks: <pass | flagged: …>
 Gaps: <things the handoff or plan didn't cover that may matter>
@@ -138,7 +143,7 @@ If the handoff was `context_depth: deep` with no prior handoff, surface the gap 
 
 Pick up at the **exact** next action from the handoff. Not the start of the plan — the current position.
 
-Before acting, determine which command the next action calls for:
+If the orientation block listed anything under `Unpromoted`, run `/promote` for those points first, so the plan is true before implementation resumes. Then determine which command the next action calls for:
 - Understanding the codebase → `/research` (skip if `Context/Research/` exists and was updated within the last commit — i.e., no new commits touched the codebase since `/research` last ran. If in doubt, check `git log --oneline -5` against `Research/Research.md`'s "Last updated" date.)
 - Planning an implementation → `/blueprint`
 - Sharpening domain language or capturing decisions → `/grill`
@@ -153,7 +158,7 @@ State which command fits and invoke it.
 
 ### Ground rules
 
-- **Trust the plan over the handoff.** If they conflict on task, constraints, or scope, the plan is more current.
+- **Trust the plan over the handoff.** If they conflict on task, constraints, or scope, the plan is more current — except on the points the handoff lists under `Decisions not yet in the plan`, which were made after the plan's last update.
 - **Never re-research what the durable context covers.** `Context/Research/` and the plan IS the research.
 - **Empowerment clause:** the handoff is the path the prior agent saw — not the only path. If you see a meaningfully better path that respects the task, constraints, and north star, propose it.
 - **Contradiction protocol:** if you discover something that contradicts the handoff, flag it: "Handoff says X, but the plan says Y at `Context/Plans/<name>.md:line`." Pause for guidance.
@@ -164,6 +169,7 @@ State which command fits and invoke it.
 ## Failure modes
 
 - **Trusting a stale handoff over the plan.** The handoff was written before `/grill` updated the plan. The plan is more current — prefer it.
+- **Skipping `Decisions not yet in the plan`.** The plan is authoritative because it is kept current; that section records exactly where it is not. Ignoring it re-litigates settled decisions.
 - **Missing that the only handoff is `context_depth: deep`.** When it's the sole handoff and degraded, early constraints may be lost. Flag it.
 - **Skipping the user beat.** Step 5 is mandatory. The handoff cannot capture knowledge the user holds but never expressed.
 - **Stale verification.** State checked at Step 3 can drift during execution. Re-verify before irreversible actions.
