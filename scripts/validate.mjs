@@ -114,6 +114,46 @@ function validateSkill(name) {
   }
 }
 
+const PUBLICATION_PATTERNS = [
+  { pattern: /-----BEGIN [A-Z ]*PRIVATE KEY-----/, reason: "private key" },
+  { pattern: /\b(?:gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,})\b/, reason: "GitHub token" },
+  { pattern: /\bsk-(?:ant-)?[A-Za-z0-9_-]{20,}\b/, reason: "API key" },
+  { pattern: /\bAKIA[0-9A-Z]{16}\b/, reason: "AWS access key" },
+  { pattern: /\bxox[abpr]-[A-Za-z0-9-]{10,}\b/, reason: "Slack token" },
+  { pattern: /\bAIza[0-9A-Za-z_-]{35}\b/, reason: "Google API key" },
+  { pattern: /\b(?:api[_-]?key|secret|password|token)\s*[:=]\s*["']?[A-Za-z0-9_\-/+=]{16,}/i, reason: "credential assignment" },
+  { pattern: /[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+\.[A-Za-z]{2,}/, reason: "email address" },
+  { pattern: /\/Users\/[^\s/"'`]+|\/home\/[^\s/"'`]+/, reason: "absolute home path" },
+  { pattern: /~\/Developer\//, reason: "personal development path" },
+];
+const SKIPPED_DIRS = new Set([".git", "node_modules"]);
+const BINARY_EXTENSIONS = /\.(?:png|jpe?g|gif|webp|svg|ico|pdf|zip|tgz|gz|woff2?|ttf|otf|mp[34]|wasm)$/i;
+
+// Everything in the repository is published, by git or by npm, so every
+// text file is scanned for secrets and for anything tied to one machine
+// or one person.
+function validatePublishedFiles() {
+  const walk = (dir) => {
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      if (SKIPPED_DIRS.has(entry.name) || entry.name === ".DS_Store") continue;
+      const full = join(dir, entry.name);
+      if (entry.isDirectory()) {
+        walk(full);
+        continue;
+      }
+      if (!entry.isFile() || BINARY_EXTENSIONS.test(entry.name)) continue;
+      const relative = full.slice(root.length + 1);
+      const lines = readFileSync(full, "utf8").split(/\r?\n/);
+      lines.forEach((line, index) => {
+        for (const { pattern, reason } of PUBLICATION_PATTERNS) {
+          if (pattern.test(line)) error(relative, `line ${index + 1} contains a ${reason}`);
+        }
+      });
+    }
+  };
+  walk(root);
+}
+
 function validateReadme(skillNames) {
   if (!existsSync(readmePath)) {
     error("README.md", "missing");
@@ -142,6 +182,7 @@ const skillNames = readdirSync(skillsDir)
 if (skillNames.length === 0) error("skills", "no skill directories found");
 for (const name of skillNames) validateSkill(name);
 validateReadme(skillNames);
+validatePublishedFiles();
 
 for (const message of warnings) console.log(`warning  ${message}`);
 for (const message of errors) console.log(`error    ${message}`);
