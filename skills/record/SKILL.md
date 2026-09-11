@@ -6,8 +6,7 @@ description: Capture a concept, explanation, or analogy in a personal engineerin
 Record a concept in the user's personal engineering knowledge library. Resolve the library root before writing:
 
 1. Use `PLAYBOOK_LIBRARY_DIR` when that environment variable is set.
-2. Otherwise, preserve existing installations by using `~/Developer/The Architect/` if that directory already exists.
-3. Otherwise, ask the user to choose a location; suggest `~/Documents/Engineering Notes/`, but never create it without explicit approval.
+2. Otherwise, ask the user to choose a location; suggest `~/Documents/Engineering Notes/`, but never create it without explicit approval. Recommend exporting `PLAYBOOK_LIBRARY_DIR` so the choice persists across sessions.
 
 Call the resolved directory `<library-root>` throughout this workflow.
 
@@ -60,10 +59,10 @@ Write to `<library-root>/Chapters/<Concept-Name>.md`. Create `Chapters/` if it d
 
 ### 3. Update the glossary
 
-Write or update `<library-root>/Glossary.md`. Create it if it does not exist. Append the new entry, then sort alphabetically:
+Write or update `<library-root>/Glossary.md`. Create it if it does not exist. Use the library directory's name as `{Library Name}`. Append the new entry, then sort alphabetically:
 
 ```md
-# The Architect — Glossary
+# {Library Name} — Glossary
 
 {One-line description: "A personal reference of engineering concepts, built through conversation."}
 

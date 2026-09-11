@@ -157,10 +157,9 @@ Run `init` once to create the missing scaffolding without overwriting existing f
 `record` resolves its library root in this order:
 
 1. `PLAYBOOK_LIBRARY_DIR`, when set.
-2. An existing `~/Developer/The Architect/` directory, for backward compatibility.
-3. A location chosen and approved by the user.
+2. A location chosen and approved by the user.
 
-It never creates an unconfigured library silently.
+It never creates an unconfigured library silently. Export `PLAYBOOK_LIBRARY_DIR` to make the choice permanent.
 
 ### Grove integration
 
