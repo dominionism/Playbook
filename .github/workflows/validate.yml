@@ -22,12 +22,11 @@ jobs:
       - name: Repository invariants
         run: npm test
 
-      - uses: astral-sh/setup-uv@v10
-
       - name: Agent Skills reference validator
         run: |
+          pipx install skills-ref
           for skill in skills/*/; do
-            uvx --from skills-ref agentskills validate "$skill"
+            agentskills validate "$skill"
           done
 
       - name: Installer discovery
