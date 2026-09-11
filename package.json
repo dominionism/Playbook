@@ -1,6 +1,6 @@
 {
   "name": "@dominionism/playbook",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "Personal engineering commands for planning, building, reviewing, and shipping software with AI coding agents.",
   "license": "MIT",
