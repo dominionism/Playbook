@@ -1,0 +1,39 @@
+{
+  "name": "@dominionism/playbook",
+  "version": "1.0.0",
+  "description": "Personal engineering commands for planning, building, reviewing, and shipping software with AI coding agents.",
+  "keywords": [
+    "agent-skills",
+    "skills",
+    "claude-code",
+    "codex",
+    "opencode",
+    "pi",
+    "ai-agents",
+    "coding-agents",
+    "engineering-workflow",
+    "playbook"
+  ],
+  "homepage": "https://github.com/dominionism/Playbook#readme",
+  "bugs": "https://github.com/dominionism/Playbook/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dominionism/Playbook.git"
+  },
+  "license": "MIT",
+  "author": "dominionism",
+  "files": [
+    "skills",
+    "scripts/link.sh"
+  ],
+  "scripts": {
+    "validate": "node scripts/validate.mjs",
+    "test": "node scripts/validate.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
