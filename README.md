@@ -2,6 +2,9 @@
 
 Personal engineering commands for planning, building, reviewing, and shipping software with AI coding agents.
 
+[![Validate](https://github.com/dominionism/Playbook/actions/workflows/validate.yml/badge.svg)](https://github.com/dominionism/Playbook/actions/workflows/validate.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 Playbook is an opinionated collection of reusable engineering workflows. Each command is packaged as an [Agent Skill](https://agentskills.io): one canonical `SKILL.md` that works unchanged in Claude Code, Codex, OpenCode, Pi, OMP, and any other agent that implements the standard. There are no per-agent prompt files, loaders, or installers to keep in sync.
 
 ## Install
@@ -183,7 +186,7 @@ npm test
 for skill in skills/*/; do uvx --from skills-ref agentskills validate "$skill"; done
 ```
 
-`npm test` checks the frontmatter, the skill layout, bundled references, and that the command tables above match `skills/`. The second command runs the reference validator from agentskills.io.
+`npm test` checks the frontmatter, the skill layout, bundled references, and that the command tables above match `skills/`. The second command runs the reference validator from agentskills.io. CI runs both on every push and pull request, and also confirms that the installer discovers every skill.
 
 ### Structure
 
